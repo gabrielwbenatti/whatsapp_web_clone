@@ -1,8 +1,10 @@
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:whatsapp_web_clone/models/usuario.dart';
 import 'package:whatsapp_web_clone/utils/color_pallete.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _newRegister = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Uint8List? _selectedImageFile;
 
   _dataValidation() async {
@@ -43,7 +46,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   .then((auth) {
                 String? userId = auth.user?.uid;
                 if (userId != null) {
-                  _uploadImage(userId);
+                  Usuario user = Usuario(
+                    userId,
+                    name,
+                    email,
+                  );
+
+                  _uploadImage(user);
                 }
                 // print('Usuario cadastrado $userId');
               });
@@ -57,9 +66,8 @@ class _LoginScreenState extends State<LoginScreen> {
           await _auth
               .signInWithEmailAndPassword(email: email, password: password)
               .then((auth) {
-            String? userEmail = auth.user?.email;
-
-            print('Usuario logado $userEmail');
+            //rota de tela inicial
+            Navigator.pushReplacementNamed(context, '/home');
           });
         }
       } else {
@@ -80,15 +88,27 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void _uploadImage(String userId) {
+  void _uploadImage(Usuario user) {
     Uint8List? selectedFile = _selectedImageFile;
 
-    Reference profilePicture = _storage.ref('images/profile/$userId.jpg');
+    Reference profilePicture =
+        _storage.ref('images/profile/${user.idUsuario}.jpg');
+
     if (selectedFile != null) {
       UploadTask uploadTask = profilePicture.putData(selectedFile);
 
       uploadTask.whenComplete(() async {
         String imageLink = await uploadTask.snapshot.ref.getDownloadURL();
+
+        user.urlImagem = imageLink;
+
+        final userRef = _firestore.collection('usuarios');
+
+        userRef.doc(user.idUsuario).set(user.toMap()).then((value) {
+          //rota de tela inicial
+          Navigator.pushReplacementNamed(context, '/home');
+        });
+
         print('link imagem $imageLink');
       });
     }
