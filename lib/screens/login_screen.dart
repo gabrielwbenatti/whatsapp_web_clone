@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_web_clone/utils/color_pallete.dart';
@@ -19,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _newRegister = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  Uint8List? _selectedImageFile;
 
   _dataValidation() async {
     String name = _contollerName.text;
@@ -42,13 +45,31 @@ class _LoginScreenState extends State<LoginScreen> {
           } else {
             print('Nome inválido');
           }
-        } else {}
+        } else {
+          await _auth
+              .signInWithEmailAndPassword(email: email, password: password)
+              .then((auth) {
+            String? userEmail = auth.user?.email;
+
+            print('Usuario logado $userEmail');
+          });
+        }
       } else {
         print('Senha inválida');
       }
     } else {
       print('E-mail inválido');
     }
+  }
+
+  void _selectImage() async {
+    //selecionar o arquivo
+    FilePickerResult? file =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+
+    setState(() {
+      _selectedImageFile = file?.files.single.bytes;
+    });
   }
 
   @override
@@ -99,25 +120,34 @@ class _LoginScreenState extends State<LoginScreen> {
                           visible: _newRegister,
                           child: Column(
                             children: [
-                              Container(
+                              SizedBox(
                                 height: 150,
                                 width: 150,
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.person_outline,
-                                    color: Colors.black54,
-                                    size: 60,
-                                  ),
-                                ),
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: ColorPalette.clWhite,
+                                child: ClipOval(
+                                  child: _selectedImageFile != null
+                                      ? Image.memory(
+                                          _selectedImageFile!,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Container(
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: ColorPalette.clWhite,
+                                          ),
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.person_outline,
+                                              color: Colors.black54,
+                                              size: 60,
+                                            ),
+                                          ),
+                                        ),
                                 ),
                               ),
                               const SizedBox(height: 10),
                               OutlinedButton(
-                                onPressed: () {},
-                                child: const Text('Selecionar imagem'),
+                                onPressed: _selectImage,
+                                child: const Text('Selecionar foto'),
                               ),
                               const SizedBox(height: 20),
                               Material(
