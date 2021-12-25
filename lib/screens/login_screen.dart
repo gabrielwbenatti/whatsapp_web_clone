@@ -36,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
             )
                 .then((auth) {
               String? userId = auth.user?.uid;
+
               print('Usuario cadastrado $userId');
             });
           } else {
@@ -164,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 primary: ColorPalette.clGreen),
-                            onPressed: () {},
+                            onPressed: _dataValidation,
                             child: Padding(
                               padding: const EdgeInsets.all(8),
                               child: Text(_newRegister ? 'Cadastrar' : 'Login'),
