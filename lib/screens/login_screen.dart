@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _uploadImage(String userId) {
     Uint8List? selectedFile = _selectedImageFile;
 
-    Reference profilePicture = _storage.ref('images/profile/$userId');
+    Reference profilePicture = _storage.ref('images/profile/$userId.jpg');
     if (selectedFile != null) {
       UploadTask uploadTask = profilePicture.putData(selectedFile);
 
