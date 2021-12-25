@@ -28,6 +28,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Uint8List? _selectedImageFile;
 
+  _userLogged() async {
+    User? loggedUser = await _auth.currentUser;
+
+    if (loggedUser != null) {
+      Navigator.pushReplacementNamed(context, '/home');
+    }
+  }
+
   _dataValidation() async {
     String name = _contollerName.text;
     String email = _contollerEmail.text;
@@ -112,6 +120,12 @@ class _LoginScreenState extends State<LoginScreen> {
         print('link imagem $imageLink');
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _userLogged();
   }
 
   @override
