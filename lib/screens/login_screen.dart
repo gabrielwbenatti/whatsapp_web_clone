@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_web_clone/utils/color_pallete.dart';
 
@@ -21,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _newRegister = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   Uint8List? _selectedImageFile;
 
   _dataValidation() async {
@@ -32,16 +34,22 @@ class _LoginScreenState extends State<LoginScreen> {
       if (password.isNotEmpty && password.length > 6) {
         if (_newRegister) {
           if (name.isNotEmpty && name.length > 2) {
-            await _auth
-                .createUserWithEmailAndPassword(
-              email: email,
-              password: password,
-            )
-                .then((auth) {
-              String? userId = auth.user?.uid;
-
-              print('Usuario cadastrado $userId');
-            });
+            if (_selectedImageFile != null) {
+              await _auth
+                  .createUserWithEmailAndPassword(
+                email: email,
+                password: password,
+              )
+                  .then((auth) {
+                String? userId = auth.user?.uid;
+                if (userId != null) {
+                  _uploadImage(userId);
+                }
+                // print('Usuario cadastrado $userId');
+              });
+            } else {
+              print('Selecione uma imagem');
+            }
           } else {
             print('Nome inválido');
           }
@@ -70,6 +78,20 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _selectedImageFile = file?.files.single.bytes;
     });
+  }
+
+  void _uploadImage(String userId) {
+    Uint8List? selectedFile = _selectedImageFile;
+
+    Reference profilePicture = _storage.ref('images/profile/$userId');
+    if (selectedFile != null) {
+      UploadTask uploadTask = profilePicture.putData(selectedFile);
+
+      uploadTask.whenComplete(() async {
+        String imageLink = await uploadTask.snapshot.ref.getDownloadURL();
+        print('link imagem $imageLink');
+      });
+    }
   }
 
   @override
