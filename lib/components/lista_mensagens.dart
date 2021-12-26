@@ -15,16 +15,16 @@ class _ListaMensagensState extends State<ListaMensagens> {
 
     return Container(
       width: widthScren,
-      // decoration: BoxDecoration(
-      //   image: DecorationImage(
-      //     image: AssetImage('images/bg.png'),
-      //     fit: BoxFit.cover,
-      //   ),
-      // ),
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('images/bg.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
       child: Column(
         children: [
           //TODO: lista de mensagens
-          Expanded(child: Container(color: Colors.red)),
+          Expanded(child: Container()),
 
           //caixa de mensagem
           Container(
