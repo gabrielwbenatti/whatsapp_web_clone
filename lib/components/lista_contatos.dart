@@ -9,7 +9,7 @@ class ListaContatos extends StatelessWidget {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  late String _idUsuarioLogado;
+  late final String _idUsuarioLogado;
 
   Future<List<Usuario>> _recuperarContatos() async {
     _recuperarDadosUsuarioLogado();
@@ -40,8 +40,8 @@ class ListaContatos extends StatelessWidget {
     return listaUsuarios;
   }
 
-  _recuperarDadosUsuarioLogado() async {
-    User? usuarioAtual = await _auth.currentUser;
+  _recuperarDadosUsuarioLogado() {
+    User? usuarioAtual = _auth.currentUser;
     if (usuarioAtual != null) {
       _idUsuarioLogado = usuarioAtual.uid;
     }

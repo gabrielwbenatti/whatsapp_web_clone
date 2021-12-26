@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
 class Usuario {
   String idUsuario;
@@ -15,10 +15,10 @@ class Usuario {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-      'idUsuario': this.idUsuario,
-      'email': this.email,
-      'nome': this.nome,
-      'urlImagem': this.urlImagem,
+      'idUsuario': idUsuario,
+      'email': email,
+      'nome': nome,
+      'urlImagem': urlImagem,
     };
 
     return map;

@@ -51,7 +51,7 @@ class _MensagensScreenState extends State<MensagensScreen> {
           ),
         ],
       ),
-      body: SafeArea(
+      body: const SafeArea(
         child: ListaMensagens(),
       ),
     );
