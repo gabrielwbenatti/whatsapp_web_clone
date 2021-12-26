@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _contollerEmail =
       TextEditingController(text: 'gabriel@gmail.com');
   final TextEditingController _contollerPassowrd =
-      TextEditingController(text: '12346');
+      TextEditingController(text: '1234567');
 
   bool _newRegister = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     User? loggedUser = await _auth.currentUser;
 
     if (loggedUser != null) {
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     }
   }
 
@@ -75,7 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
               .signInWithEmailAndPassword(email: email, password: password)
               .then((auth) {
             //rota de tela inicial
-            Navigator.pushReplacementNamed(context, '/home');
+            // Navigator.pushReplacementNamed(context, '/home');
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/home', (route) => false);
           });
         }
       } else {

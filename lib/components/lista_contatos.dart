@@ -79,7 +79,10 @@ class ListaContatos extends StatelessWidget {
                   itemBuilder: (context, index) {
                     Usuario user = listaUsuario[index];
                     return ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, '/mensagens',
+                            arguments: user);
+                      },
                       leading: CircleAvatar(
                         radius: 25,
                         backgroundColor: Colors.grey,
