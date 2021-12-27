@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_web_clone/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,12 +16,20 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  User? usuarioFirebase = FirebaseAuth.instance.currentUser;
+  String urlInicial = '/';
+
+  if (usuarioFirebase != null) {
+    urlInicial = '/home';
+  }
+
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'WhatsApp Web Clone',
       theme: temaPadrao,
       // home: LoginScreen(),
-      initialRoute: '/login',
+      initialRoute: urlInicial,
       onGenerateRoute: Rotas.gerarRota,
     ),
   );

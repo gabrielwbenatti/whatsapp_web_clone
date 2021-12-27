@@ -28,13 +28,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Uint8List? _selectedImageFile;
 
-  _userLogged() async {
-    User? loggedUser = await _auth.currentUser;
+  // _userLogged() {
+  //   User? loggedUser = _auth.currentUser;
 
-    if (loggedUser != null) {
-      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-    }
-  }
+  //   if (loggedUser != null) {
+  //     Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+  //   }
+  // }
 
   _dataValidation() async {
     String name = _contollerName.text;
@@ -72,7 +72,10 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         } else {
           await _auth
-              .signInWithEmailAndPassword(email: email, password: password)
+              .signInWithEmailAndPassword(
+            email: email,
+            password: password,
+          )
               .then((auth) {
             //rota de tela inicial
             // Navigator.pushReplacementNamed(context, '/home');
@@ -112,6 +115,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
         user.urlImagem = imageLink;
 
+        //atualiza url e nome de usuario
+        await _auth.currentUser?.updateDisplayName(user.nome);
+        await _auth.currentUser?.updatePhotoURL(user.urlImagem);
+
         final userRef = _firestore.collection('usuarios');
 
         userRef.doc(user.idUsuario).set(user.toMap()).then((value) {
@@ -124,11 +131,11 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _userLogged();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _userLogged();
+  // }
 
   @override
   Widget build(BuildContext context) {
